@@ -1,0 +1,12 @@
+{
+
+    "guacamoleVersion" : "1.2.0",
+
+    "name"      : "CTFd Authentication Extension",
+    "namespace" : "guacamole-ctfd-auth",
+
+    "authProviders" : [
+        "org.apache.guacamole.auth.CTFdAuthenticationProvider"
+    ]
+
+}
