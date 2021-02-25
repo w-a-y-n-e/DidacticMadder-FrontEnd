@@ -1,2 +1,3 @@
 org/apache/guacamole/auth/CTFdAuthenticationProvider.class
+org/apache/guacamole/auth/CTFdAuthenticationProvider$1.class
 org/apache/guacamole/auth/CTFdAuthenticatedUser.class

@@ -12,6 +12,13 @@ import org.apache.guacamole.net.auth.credentials.GuacamoleInvalidCredentialsExce
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import java.security.cert.CertificateException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
+import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.HttpClient;
 import org.apache.http.util.EntityUtils;
@@ -53,16 +60,23 @@ public class CTFdAuthenticationProvider extends AbstractAuthenticationProvider {
                 clientCookie.setDomain("127.0.0.1");
                 clientCookie.setPath("/");
                 cookieStore.addCookie(clientCookie);
-                HttpClient client = HttpClientBuilder.create().setDefaultCookieStore(cookieStore).build();
-                try{
-                        final HttpGet httpRequest = new HttpGet("http://127.0.0.1/getusername");
+		//HttpClient client = HttpClientBuilder.create().setDefaultCookieStore(cookieStore).build();
+		try{
+		HttpClient client = HttpClients.custom().setSSLContext(new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
+			    public boolean isTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+				            return true;
+					        }
+		}).build()).setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE).setDefaultCookieStore(cookieStore).build();
+                
+                        final HttpGet httpRequest = new HttpGet("https://127.0.0.1/getusername");
                         HttpResponse httpResponse = client.execute(httpRequest);
                         externalUsername=EntityUtils.toString(httpResponse.getEntity());
                     //assertThat(response.getStatusLine().getStatusCode(), equalTo(200));
                 }
-                catch (IOException e) {
+                catch (Exception e) {
                         e.printStackTrace();
                 }
+		//externalUsername="guacadmin";
                 authenticatedUser.init(externalUsername, credentials);
                 return authenticatedUser;
         }
