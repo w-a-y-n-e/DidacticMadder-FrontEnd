@@ -1,0 +1,73 @@
+{% extends "challenge.html" %}
+
+{% block description %}
+    {{ challenge.html }}
+
+<div>
+<button type="button" onclick="loadXMLDoc()" id="scenariobutton">Build Scenario</button>
+    <div><span id="response-text"></span></div>
+</div>
+
+<script>
+
+var completed = false
+var destroyed = false
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function loadXMLDoc() {
+if (!completed){
+document.getElementById("scenariobutton").innerHTML = "Building...";
+while (!completed){
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 201) {
+      document.getElementById("response-text").innerHTML = this.responseText;
+      document.getElementById("scenariobutton").innerHTML = "Finish Scenario";
+      completed = true;
+      return;
+    }
+  };
+  xhttp.open("GET", "/vm_control/{{ challenge.id }}", true);
+  xhttp.send();
+  await sleep(5000);
+}
+}
+else if (completed){
+document.getElementById("scenariobutton").innerHTML = "Destroying...";
+while (!destroyed){
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && (this.status == 202 || this.status == 404)) {
+      document.getElementById("response-text").innerHTML = this.responseText;
+      document.getElementById("scenariobutton").style.display = "none";
+      completed = true;
+      destroyed = true;
+      return;
+    }
+  };
+  xhttp.open("GET", "/vm_control/{{ challenge.id }}/end", true);
+
+  xhttp.send();
+  await sleep(5000);
+}
+
+}
+
+}
+</script>
+
+{% endblock %}
+
+{% block input %}
+    <input id="challenge-id" class="challenge-id" type="hidden" value="{{ challenge.id }}">
+    <input id="challenge-input" class="challenge-input" type="text" name="answer" placeholder="Flag"/>
+{% endblock %}
+
+{% block submit %}
+    <button id="challenge-submit" class="challenge-submit" type="submit">
+        Submit
+    </button>
+{% endblock %}

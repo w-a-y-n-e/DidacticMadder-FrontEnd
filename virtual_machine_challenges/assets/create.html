@@ -1,0 +1,63 @@
+{% extends "admin/challenges/create.html" %}
+
+{% block header %}
+<div class="alert alert-secondary" role="alert">
+	VM Challenges are used for entry into a scenario that requires external VM resources to be initialized.
+</div>
+{% endblock %}
+
+
+{% block value %}
+<div class="form-group">
+	<label for="proto">Server Flask Protocol<br>
+		<small class="form-text text-muted">
+			The protocol of the Flask instance which controls the VM creation/destruction. (http,https,etc.)
+		</small>
+	</label>
+	<input type="text" class="form-control" name="proto" placeholder="Enter server protocol" required>
+
+</div>
+
+<div class="form-group">
+	<label for="ip">Server IP Address<br>
+		<small class="form-text text-muted">
+			The IP address of the server running the VMs as accessible from CTFd
+		</small>
+	</label>
+	<input type="text" class="form-control" name="ip" placeholder="Enter server IP" required>
+
+</div>
+
+<div class="form-group">
+	<label for="port">Server Flask Port<br>
+		<small class="form-text text-muted">
+			The port number of the Flask instance which controls the VM creation/destruction.
+		</small>
+	</label>
+	<input type="text" class="form-control" name="port" placeholder="Enter server port" required>
+
+</div>
+
+<div class="form-group">
+	<label for="scenario_id">Scenario ID<br>
+		<small class="form-text text-muted">
+			The identifier for scenario resources
+		</small>
+	</label>
+	<input type="text" class="form-control" name="scenario_id" placeholder="Enter identifier for scenario resources" required>
+</div>
+
+<div class="form-group">
+	<label for="time_limit">Time Limit<br>
+		<small class="form-text text-muted">
+			Time limit for the scenario. If nothing is entered, the default will be 24 hours.
+		</small>
+	</label>
+	<input type="text" class="form-control" name="time_limit" placeholder="Enter time limit in minutes for scenario" required>
+</div>
+
+{% endblock %}
+
+{% block type %}
+<input type="hidden" value="virtual_machine_challenges" name="type" id="chaltype">
+{% endblock %}
