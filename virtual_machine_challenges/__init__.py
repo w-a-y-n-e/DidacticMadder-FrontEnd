@@ -26,6 +26,9 @@ from datetime import timedelta
 import mariadb
 import sys
 
+guacamole_user="guacamole_user"
+guacamole_password="test"
+
 class VMChallengesModel(Challenges):
     __mapper_args__ = {"polymorphic_identity": "virtual_machine_challenges"}
     id = db.Column(
@@ -120,8 +123,8 @@ class VMChallenge(BaseChallenge): # Name of table is this with underscores
 def add_current_user_to_guac():
     try:
         conn = mariadb.connect(
-            user="guacamole_user",
-            password="test",
+            user=guacamole_user,
+            password=guacamole_password,
             host="127.0.0.1",
             port=3306,
             database="guacamole_db",
@@ -182,8 +185,8 @@ def start_status_for_user(challenge,current_user):
         entity_id, ctfdadmin_entity_id = add_current_user_to_guac()
         try:
             conn = mariadb.connect(
-                user="guacamole_user",
-                password="test",
+                user=guacamole_user,
+                password=guacamole_password,
                 host="127.0.0.1",
                 port=3306,
                 database="guacamole_db",
@@ -239,8 +242,8 @@ def end_for_user(challenge,current_user):
     if r.status_code == 202:
         try:
             conn = mariadb.connect(
-                user="guacamole_user",
-                password="test",
+                user=guacamole_user,
+                password=guacamole_password,
                 host="127.0.0.1",
                 port=3306,
                 database="guacamole_db",
