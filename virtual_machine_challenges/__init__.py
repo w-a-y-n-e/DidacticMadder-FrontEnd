@@ -157,15 +157,17 @@ def add_current_user_to_guac():
 
     cur.execute('select entity_id from guacamole_entity where name = "ctfdadmin" and type = "USER_GROUP"')
     current_results_entity = cur.fetchone()
+
     if current_results_entity is not None:
         ctfdadmin_entity_id = current_results_entity[0]
+    else:
+        cur.execute('insert ignore into guacamole_entity (name,type) values (?,"USER_GROUP")', ("ctfdadmin",))
+        ctfdadmin_entity_id = cur.lastrowid
     cur.execute('select user_group_id from guacamole_user_group where entity_id = ?',(ctfdadmin_entity_id,))
     current_results_group_id = cur.fetchone()
     if current_results_group_id is not None:
         ctfdadmin_group_id = current_results_group_id[0]
-    if current_results_group_id is None or current_results_entity is None:
-        cur.execute('insert ignore into guacamole_entity (name,type) values (?,"USER_GROUP")', ("ctfdadmin",))
-        ctfdadmin_entity_id = cur.lastrowid
+    else:
         cur.execute('insert ignore into guacamole_user_group (entity_id) values (?)', (ctfdadmin_entity_id,))
         ctfdadmin_group_id = cur.lastrowid
 
