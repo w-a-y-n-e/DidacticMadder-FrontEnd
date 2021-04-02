@@ -216,12 +216,9 @@ def start_status_for_user(challenge,current_user):
                 cur.execute(
                     'INSERT ignore INTO guacamole_connection_parameter (connection_id,parameter_name,parameter_value) VALUES (?, ? ,?)',
                     (connection_id, 'port', c[2]))
-                cur.execute(
-                    'insert ignore into guacamole_connection_permission (entity_id,connection_id,permission) values (?,?,"READ")',
-                    (entity_id, connection_id))
-                cur.execute(
-                    'insert ignore into guacamole_connection_permission (entity_id,connection_id,permission) values (?,?,"READ")',
-                    (ctfdadmin_entity_id, connection_id))
+                if c[1]==1
+                    cur.execute('insert ignore into guacamole_connection_permission (entity_id,connection_id,permission) values (?,?,"READ")',(entity_id, connection_id))
+                cur.execute('insert ignore into guacamole_connection_permission (entity_id,connection_id,permission) values (?,?,"READ")',(ctfdadmin_entity_id, connection_id))
             cur.execute(
                 'insert ignore into guacamole_connection_group_permission (entity_id,connection_group_id,permission) values (?,?,"READ")',
                 (entity_id, connection_group))
