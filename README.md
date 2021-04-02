@@ -19,7 +19,7 @@ events {
 }
 ```
 -------------------------------------------------------------
-Create self signed certificate (maybe use hostname for CN?)
+- Create self signed certificate (maybe use hostname for CN?)
 `sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt`
 -------------------------------------------------------------
 - Install CTFd to `/opt/CTFd` (based on https://github.com/CTFd/CTFd):
