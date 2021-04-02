@@ -1,25 +1,29 @@
+
 # DidacticMadder-FrontEnd
 
 -------------------------------------------------------------
 Install Ubuntu 20.04 Server
--Disable cloud init
---Add "cloud-init=disabled" to GRUB_CMDLINE_LINUX in /etc/default/grub
---update-grub
+- Disable cloud init
+-- Add `cloud-init=disabled` to `GRUB_CMDLINE_LINUX` in /etc/default/grub
+-- `update-grub`
 -------------------------------------------------------------
 Install required components:
-- sudo apt-get install python3-pip nginx redis-server
-- sudo pip3 install gunicorn
+- `sudo apt-get install python3-pip nginx redis-server`
+- `sudo pip3 install gunicorn`
 -------------------------------------------------------------
-Edit (might be default) /etc/nginx/nginx.conf:
+Edit (might be default) `/etc/nginx/nginx.conf`:
 
+```
 events {
         worker_connections 768;
 }
+```
 -------------------------------------------------------------
 Create self signed certificate (maybe use hostname for CN?)
-sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt
+`sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt`
 -------------------------------------------------------------
-Install CTFd to /opt/CTFd (based on https://github.com/CTFd/CTFd):
+- Install CTFd to `/opt/CTFd` (based on https://github.com/CTFd/CTFd):
+```
 cd /opt/
 sudo git clone https://github.com/CTFd/CTFd.git
 sudo chown -R nimda:nimda CTFd
@@ -28,12 +32,14 @@ pip3 install -r requirements.txt
 sudo apt-get install -y libmariadb-dev
 pip3 install rq
 pip3 install mariadb
-? set REDIS_URL = redis://localhost:6379 in config.ini
+```
+- set `REDIS_URL = redis://localhost:6379` in config.ini
 -------------------------------------------------------------
 Build/install guacamole-server
 - According to https://guacamole.apache.org/doc/gug/installing-guacamole.html
-sudo apt install -y gcc g++ libcairo2-dev libjpeg-turbo8-dev libpng-dev libtool-bin libossp-uuid-dev libavcodec-dev libavutil-dev libswscale-dev freerdp2-dev libpango1.0-dev libssh2-1-dev libvncserver-dev libtelnet-dev libssl-dev libvorbis-dev libwebp-dev make build-essential
+`sudo apt install -y gcc g++ libcairo2-dev libjpeg-turbo8-dev libpng-dev libtool-bin libossp-uuid-dev libavcodec-dev libavutil-dev libswscale-dev freerdp2-dev libpango1.0-dev libssh2-1-dev libvncserver-dev libtelnet-dev libssl-dev libvorbis-dev libwebp-dev make build-essential`
 
+```
 wget https://mirror.olnevhost.net/pub/apache/guacamole/1.3.0/source/guacamole-server-1.3.0.tar.gz
 tar -xzf guacamole-server-1.3.0.tar.gz
 cd guacamole-server-1.3.0/
@@ -53,13 +59,17 @@ sudo mkdir /etc/guacamole/{extensions,lib}
 echo "GUACAMOLE_HOME=/etc/guacamole" | sudo tee -a /etc/default/tomcat9
 
 sudo ln -s /etc/guacamole /usr/share/tomcat9/.guacamole
+```
 -------------------------------------------------------------
-Install database for guacamole (https://guacamole.apache.org/doc/gug/jdbc-auth.html)
+- Install database for guacamole (https://guacamole.apache.org/doc/gug/jdbc-auth.html)
 
+```
 sudo apt install mariadb-server
 sudo mysql_secure_installation
-- Follow steps
+```
 
+
+```
 wget https://mirrors.sonic.net/apache/guacamole/1.3.0/binary/guacamole-auth-jdbc-1.3.0.tar.gz
 sudo tar xvf guacamole-auth-jdbc-1.3.0.tar.gz
 cd guacamole-auth-jdbc-1.3.0/mysql/
@@ -76,31 +86,28 @@ cd
 sudo wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-8.0.23.tar.gz
 sudo tar xvf mysql-connector-java-8.0.23.tar.gz mysql-connector-java-8.0.23/
 sudo mv mysql-connector-java-8.0.23/mysql-connector-java-8.0.23.jar /etc/guacamole/lib
-
+```
 
 -------------------------------------------------------------
-Configure CTFd
+- Configure CTFd
 - plugin for DM
-Install CTFd/CTFd/plugins/virtual_machine_challenges
-
-
+- Install CTFd/CTFd/plugins/virtual_machine_challenges
 
 -------------------------------------------------------------
-cd /opt
-sudo git clone https://github.com/w-a-y-n-e/DidacticMadder-FrontEnd.git
+- `cd /opt`
+- `sudo git clone https://github.com/w-a-y-n-e/DidacticMadder-FrontEnd.git`
 
-cd DidacticMadder-FrontEnd
+- `cd DidacticMadder-FrontEnd`
 
-CHANGE:
+- Change:
 username in gunicorn.service
 database user and password in guacamole.properties
-Change database password in 
-sudo cp guacamole-ctfd-authentication/target/guacamole-ctfd-auth-1.2.0.jar /etc/guacamole/extensions/
+- Change database password in 
+- `sudo cp guacamole-ctfd-authentication/target/guacamole-ctfd-auth-1.2.0.jar /etc/guacamole/extensions/`
 
+- `mvn assembly:assembly -DdescriptorId=jar-with-dependencies`
 
-mvn assembly:assembly -DdescriptorId=jar-with-dependencies
-
-
+```
 sudo cp gunicorn.service /etc/systemd/system/gunicorn.service
 sudo cp gunicorn.socket /etc/systemd/system/gunicorn.socket
 sudo cp reverse_proxy /etc/nginx/sites-available/reverse_proxy
@@ -114,3 +121,4 @@ sudo systemctl restart gunicorn.socket
 sudo systemctl enable gunicorn.socket
 sudo systemctl enable gunicorn.service
 sudo systemctl restart gunicorn.service
+```
